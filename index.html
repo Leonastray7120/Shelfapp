@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#2E7D32">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ShelfCash">
+<meta name="application-name" content="ShelfCash">
+<title>ShelfCash</title>
+<link rel="manifest" href='data:application/manifest+json,{"name":"ShelfCash","short_name":"ShelfCash","description":"Earn quick cash for small shelf tidying gigs","start_url":".","display":"standalone","orientation":"portrait","background_color":"%23FAF8F4","theme_color":"%232E7D32","icons":[{"src":"data:image/svg%2Bxml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27%3E%3Crect width=%27512%27 height=%27512%27 rx=%27100%27 fill=%27%23FFE5D0%27/%3E%3Ctext x=%2750%25%27 y=%2755%25%27 font-size=%27340%27 text-anchor=%27middle%27 dominant-baseline=%27middle%27%3E💵%3C/text%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}'>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23FFE5D0'/%3E%3Ctext x='50%25' y='55%25' font-size='340' text-anchor='middle' dominant-baseline='middle'%3E💵%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💵%3C/text%3E%3C/svg%3E">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; width: 100%; background: #FAF8F4; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; overflow: hidden; overscroll-behavior: none; -webkit-user-select: none; user-select: none; }
+body { display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #2c2c2c, #1a1a1a); }
+input, textarea { -webkit-user-select: text; user-select: text; font-family: inherit; }
+.phone-frame { width: 390px; height: 844px; max-height: 95vh; background: #FAF8F4; border-radius: 50px; overflow: hidden; border: 12px solid #1a1a1a; box-shadow: 0 0 0 2px #444, 0 30px 80px rgba(0,0,0,0.5); position: relative; display: flex; flex-direction: column; }
+.notch { width: 130px; height: 30px; background: #1a1a1a; border-radius: 0 0 20px 20px; margin: 0 auto; flex-shrink: 0; z-index: 100; position: relative; }
+@media (max-width: 600px), (pointer: coarse) {
+  body { background: #FAF8F4; display: block; }
+  .phone-frame { width: 100vw; height: 100vh; height: 100dvh; max-height: none; border-radius: 0; border: none; box-shadow: none; }
+  .notch { display: none; }
+}
+@media all and (display-mode: standalone) {
+  body { background: #FAF8F4; }
+  .phone-frame { width: 100vw; height: 100vh; height: 100dvh; border-radius: 0; border: none; box-shadow: none; }
+  .notch { display: none; }
+}
+.inner { flex: 1; overflow: hidden; position: relative; }
+.screen { position: absolute; inset: 0; display: flex; flex-direction: column; background: #FAF8F4; }
+.screen.hidden { display: none; }
+.screen.slide-in { animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.screen.fade-in { animation: fadeIn 0.4s ease-out; }
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* SPLASH */
+#screen-splash { background: linear-gradient(135deg, #2E7D32, #66BB6A); justify-content: center; align-items: center; }
+.splash-logo { font-size: 80px; animation: bounce 1s ease-out; }
+.splash-title { font-size: 36px; font-weight: 800; color: #fff; margin-top: 16px; letter-spacing: -1px; animation: fadeUp 0.8s 0.3s both; }
+.splash-sub { font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 8px; animation: fadeUp 0.8s 0.5s both; }
+.splash-loader { margin-top: 40px; width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes bounce { 0% { transform: scale(0); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* LOGIN */
+#screen-login { padding: 40px 28px; padding-top: max(60px, env(safe-area-inset-top) + 40px); justify-content: center; }
+.login-logo { text-align: center; font-size: 60px; margin-bottom: 8px; }
+.login-title { text-align: center; font-size: 28px; font-weight: 800; color: #1a1a1a; letter-spacing: -0.5px; }
+.login-sub { text-align: center; font-size: 13px; color: #888; margin-top: 6px; margin-bottom: 32px; }
+.input-group { margin-bottom: 14px; }
+.input-label { font-size: 11px; font-weight: 700; color: #2E7D32; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.input-field { width: 100%; padding: 14px 16px; border: 1.5px solid #EDE9E0; border-radius: 14px; background: #fff; font-size: 14px; color: #1a1a1a; transition: border-color 0.2s; }
+.input-field:focus { outline: none; border-color: #2E7D32; }
+.input-with-icon { position: relative; }
+.input-with-icon .icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #aaa; }
+.input-with-icon .input-field { padding-left: 40px; }
+.forgot { text-align: right; font-size: 12px; color: #2E7D32; font-weight: 600; margin-top: -8px; margin-bottom: 20px; cursor: pointer; }
+.login-btn { width: 100%; padding: 15px; background: #2E7D32; color: #fff; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.login-btn:active { background: #256528; transform: scale(0.98); }
+.divider-text { text-align: center; font-size: 11px; color: #aaa; margin: 18px 0; position: relative; }
+.divider-text::before, .divider-text::after { content: ''; position: absolute; top: 50%; width: 35%; height: 1px; background: #EDE9E0; }
+.divider-text::before { left: 0; }
+.divider-text::after { right: 0; }
+.oauth-btn { width: 100%; padding: 13px; background: #fff; color: #1a1a1a; border: 1.5px solid #EDE9E0; border-radius: 14px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; font-family: inherit; }
+.signup-link { text-align: center; font-size: 13px; color: #888; margin-top: 20px; }
+.signup-link b { color: #2E7D32; cursor: pointer; }
+.demo-hint { position: absolute; bottom: 30px; left: 28px; right: 28px; background: #FFF8E1; border: 1px dashed #E0B860; border-radius: 12px; padding: 10px 14px; text-align: center; font-size: 11px; color: #8B6914; }
+.demo-hint b { display: block; margin-bottom: 2px; }
+
+/* COMMON */
+.header { padding: 18px 20px 12px; padding-top: max(18px, env(safe-area-inset-top)); background: #FAF8F4; border-bottom: 1px solid #EDE9E0; flex-shrink: 0; }
+.scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
+.scroll::-webkit-scrollbar { width: 0; display: none; }
+.bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; height: calc(78px + env(safe-area-inset-bottom)); padding-bottom: max(14px, env(safe-area-inset-bottom)); background: rgba(250, 248, 244, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid #EDE9E0; display: flex; align-items: center; justify-content: space-around; z-index: 50; }
+.nav-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; padding: 8px 24px; color: #999; font-family: inherit; }
+.nav-btn .ico { font-size: 24px; line-height: 1; }
+.nav-btn .lbl { font-size: 10px; font-weight: 500; }
+.nav-btn.active { color: #2E7D32; }
+.nav-btn.active .lbl { font-weight: 700; }
+.nav-btn .dot { width: 4px; height: 4px; border-radius: 50%; background: #2E7D32; margin-top: -1px; }
+.row { display: flex; justify-content: space-between; align-items: center; }
+.greet-sub { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.greet-name { font-size: 19px; font-weight: 700; color: #1a1a1a; margin-top: 2px; }
+.bell-btn { position: relative; background: #EDE9E0; border: none; border-radius: 12px; width: 36px; height: 36px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; margin-right: 8px; }
+.bell-dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: #E91E63; border: 2px solid #FAF8F4; }
+.balance-box { background: #E8F5E9; border-radius: 12px; padding: 8px 14px; text-align: right; }
+.balance-lbl { font-size: 9px; color: #2E7D32; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.balance-val { font-size: 16px; font-weight: 700; color: #2E7D32; }
+.tabs { display: flex; gap: 4px; background: #EDE9E0; border-radius: 14px; padding: 4px; margin-top: 14px; }
+.tab { flex: 1; border: none; cursor: pointer; border-radius: 10px; padding: 9px 0; background: transparent; color: #888; font-size: 13px; font-weight: 500; font-family: inherit; transition: all 0.2s; }
+.tab.active { background: #fff; color: #1a1a1a; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.section-hdr { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px 6px; }
+.section-hdr b { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+.section-hdr i { font-size: 11px; color: #2E7D32; font-weight: 600; font-style: normal; }
+.gig-card { margin: 6px 14px; background: #fff; border-radius: 18px; border: 1px solid #EDE9E0; padding: 14px 16px; cursor: pointer; transition: transform 0.1s, box-shadow 0.15s; }
+.gig-card:active { transform: scale(0.98); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.card-inner { display: flex; gap: 12px; align-items: flex-start; }
+.brand-ico { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.card-body { flex: 1; min-width: 0; }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; }
+.card-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+.reward-pill { background: #E8F5E9; color: #2E7D32; font-weight: 700; font-size: 12px; padding: 4px 9px; border-radius: 20px; white-space: nowrap; }
+.card-store { font-size: 12px; color: #888; margin-top: 3px; }
+.card-brand { font-size: 11px; color: #bbb; margin-top: 1px; }
+.card-foot { display: flex; gap: 8px; align-items: center; margin-top: 9px; flex-wrap: wrap; }
+.tag { font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+.meta { font-size: 11px; color: #aaa; font-weight: 500; }
+.ml-auto { margin-left: auto; }
+.back-btn { background: rgba(237, 233, 224, 0.7); border: none; border-radius: 12px; width: 36px; height: 36px; cursor: pointer; font-size: 18px; display: inline-flex; align-items: center; justify-content: center; }
+.back-btn:active { background: #EDE9E0; }
+.detail-title { font-size: 16px; font-weight: 700; color: #1a1a1a; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.heart-btn { background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px; }
+.ref-img { background: linear-gradient(135deg, #EDE9E0, #DDD8CB); border-radius: 16px; height: 140px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.instr-box { background: #fff; border-radius: 14px; border: 1px solid #EDE9E0; padding: 14px; margin-bottom: 12px; }
+.instr-box b { font-size: 13px; font-weight: 700; margin-bottom: 8px; display: block; }
+.instr-box p { font-size: 12px; color: #555; line-height: 1.7; }
+.stats-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.stat-card { flex: 1; background: #fff; border-radius: 14px; border: 1px solid #EDE9E0; padding: 10px 6px; text-align: center; min-width: 0; }
+.stat-card .l { font-size: 9px; color: #aaa; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card .v { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stat-card .v.g { color: #2E7D32; }
+.cta-btn { background: #2E7D32; color: #fff; border: none; border-radius: 16px; padding: 15px 0; font-size: 15px; font-family: inherit; font-weight: 700; cursor: pointer; width: 100%; letter-spacing: 0.3px; }
+.cta-btn:active { transform: scale(0.98); background: #256528; }
+.cta-btn.secondary { background: #fff; color: #2E7D32; border: 1.5px solid #2E7D32; }
+.cta-btn.danger { background: #fff; color: #C62828; border: 1.5px solid #FFCDD2; }
+
+.wallet-card { background: linear-gradient(135deg, #fff, #FAFCF6); border-radius: 18px; border: 1px solid #EDE9E0; padding: 18px 20px; margin-top: 14px; }
+.wallet-lbl { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.wallet-tot { font-size: 30px; font-weight: 700; color: #2E7D32; margin: 4px 0 12px; letter-spacing: -0.5px; }
+.wstats { display: flex; gap: 8px; }
+.wstat { flex: 1; background: #F9FBE7; border-radius: 12px; padding: 10px 8px; min-width: 0; }
+.wstat .l { font-size: 9px; color: #aaa; font-weight: 600; text-transform: uppercase; }
+.wstat .v { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-top: 2px; }
+.wstat .v.g { color: #2E7D32; }
+.tx-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #EDE9E0; }
+.tx-ico { width: 40px; height: 40px; border-radius: 12px; background: #EDE9E0; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.tx-row .b { flex: 1; min-width: 0; }
+.tx-lbl { font-size: 13px; font-weight: 600; color: #1a1a1a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tx-sub { font-size: 11px; color: #aaa; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tx-amt { font-size: 14px; font-weight: 700; color: #2E7D32; white-space: nowrap; }
+.tx-amt.red { color: #C62828; }
+.stamp { font-size: 9px; padding: 3px 8px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+.st-ok { background: #E8F5E9; color: #2E7D32; }
+.st-pend { background: #FFF3E0; color: #E65100; }
+.st-rej { background: #FFEBEE; color: #C62828; }
+.chart-bar { display: flex; align-items: flex-end; gap: 8px; height: 90px; padding: 14px 0 6px; }
+.cb-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.cb-bar { width: 100%; background: linear-gradient(180deg, #66BB6A, #2E7D32); border-radius: 5px 5px 0 0; min-height: 4px; }
+.cb-lbl { font-size: 10px; color: #aaa; font-weight: 600; }
+.divider { height: 1px; background: #EDE9E0; margin: 14px 0; }
+.section-lbl { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.8px; margin: 14px 16px 6px; }
+.avatar { width: 86px; height: 86px; border-radius: 50%; background: linear-gradient(135deg, #2E7D32, #66BB6A); display: flex; align-items: center; justify-content: center; font-size: 30px; color: #fff; font-weight: 700; margin: 0 auto 12px; position: relative; }
+.verified { position: absolute; bottom: 0; right: 0; width: 26px; height: 26px; border-radius: 50%; background: #2196F3; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; border: 3px solid #FAF8F4; }
+.pname { font-size: 19px; font-weight: 700; color: #1a1a1a; text-align: center; }
+.psub { font-size: 12px; color: #888; text-align: center; margin-top: 2px; }
+.pbadge { display: inline-block; background: #E8F5E9; color: #2E7D32; font-size: 11px; font-weight: 700; padding: 4px 14px; border-radius: 20px; margin-top: 8px; }
+.stats3 { display: flex; gap: 8px; margin: 16px 0; }
+.st3 { flex: 1; background: #fff; border-radius: 14px; border: 1px solid #EDE9E0; padding: 12px 6px; text-align: center; min-width: 0; }
+.st3 .v { font-size: 17px; font-weight: 700; color: #1a1a1a; }
+.st3 .l { font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; font-weight: 600; }
+.info-card { background: #fff; border-radius: 14px; border: 1px solid #EDE9E0; padding: 16px; margin-bottom: 12px; }
+.info-hdr { font-size: 11px; font-weight: 700; color: #2E7D32; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+.info-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; font-size: 13px; gap: 10px; }
+.info-row .k { color: #888; flex-shrink: 0; }
+.info-row .v { color: #1a1a1a; font-weight: 600; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.achv-scroll { display: flex; gap: 10px; margin-top: 8px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+.achv-scroll::-webkit-scrollbar { display: none; }
+.ach { flex-shrink: 0; width: 100px; background: #fff; border-radius: 14px; border: 1px solid #EDE9E0; padding: 12px 8px; text-align: center; }
+.ach .e { font-size: 26px; }
+.ach .n { font-size: 11px; font-weight: 700; color: #1a1a1a; margin-top: 4px; }
+.ach .d { font-size: 9px; color: #aaa; margin-top: 1px; }
+.menu-row { display: flex; align-items: center; gap: 14px; padding: 15px 0; border-bottom: 1px solid #EDE9E0; cursor: pointer; }
+.menu-row:active { background: #F5F2EA; }
+.menu-row .i { font-size: 20px; }
+.menu-row .l { font-size: 14px; color: #1a1a1a; }
+.menu-row .r { margin-left: auto; color: #ccc; font-size: 16px; }
+.toast { position: fixed; top: max(20px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(26, 26, 26, 0.92); color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 200; max-width: 80%; text-align: center; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.empty { padding: 40px 20px; text-align: center; color: #aaa; font-size: 13px; line-height: 1.6; }
+.empty .e { font-size: 36px; display: block; margin-bottom: 10px; }
+
+/* NOTIFICATIONS */
+.notif-row { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #EDE9E0; cursor: pointer; background: #fff; }
+.notif-row.unread { background: #F1F8E9; }
+.notif-row:active { background: #EDE9E0; }
+.notif-ico { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.notif-body { flex: 1; min-width: 0; }
+.notif-title { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+.notif-desc { font-size: 12px; color: #666; margin-top: 2px; line-height: 1.4; }
+.notif-time { font-size: 10px; color: #aaa; margin-top: 4px; }
+.notif-unread-dot { width: 8px; height: 8px; border-radius: 50%; background: #2E7D32; flex-shrink: 0; margin-top: 8px; }
+
+/* NAVIGATE/MAP */
+#screen-navigate { background: #E8F0F2; }
+.map-area { flex: 1; position: relative; overflow: hidden; background: linear-gradient(135deg, #DCE7E9 0%, #C5D8DC 100%); }
+.map-area::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.4) 0, rgba(255,255,255,0.4) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, rgba(255,255,255,0.4) 0, rgba(255,255,255,0.4) 1px, transparent 1px, transparent 40px); }
+.map-streets { position: absolute; inset: 0; }
+.map-streets svg { width: 100%; height: 100%; }
+.map-pin { position: absolute; transform: translate(-50%, -100%); z-index: 5; }
+.map-pin.user { transform: translate(-50%, -50%); }
+.map-pin-marker { width: 36px; height: 36px; background: #2E7D32; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.map-pin-marker span { transform: rotate(45deg); color: #fff; font-size: 16px; }
+.map-pin.user .map-pin-marker { width: 20px; height: 20px; background: #2196F3; border-radius: 50%; transform: none; border: 4px solid #fff; box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.3); animation: pulse 2s infinite; }
+.map-pin.user .map-pin-marker span { display: none; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.3); } 50% { box-shadow: 0 0 0 12px rgba(33, 150, 243, 0); } }
+.nav-top-card { position: absolute; top: 14px; left: 14px; right: 14px; background: #fff; border-radius: 18px; padding: 14px 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 10; }
+.nav-top-card .row { gap: 10px; }
+.nav-eta { font-size: 22px; font-weight: 800; color: #2E7D32; }
+.nav-dist { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-top: 2px; }
+.nav-dest { font-size: 12px; color: #555; margin-top: 8px; padding-top: 8px; border-top: 1px solid #EDE9E0; }
+.nav-dest b { color: #1a1a1a; }
+.nav-bot-card { position: absolute; bottom: 14px; left: 14px; right: 14px; background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 -8px 24px rgba(0,0,0,0.12); z-index: 10; }
+.nav-step { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+.nav-step-ico { width: 44px; height: 44px; border-radius: 12px; background: #E8F5E9; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.nav-step-text { flex: 1; }
+.nav-step-text b { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+.nav-step-text span { display: block; font-size: 11px; color: #888; margin-top: 2px; }
+
+/* CAMERA */
+#screen-camera-before, #screen-camera-after { background: #000; }
+.cam-header { position: absolute; top: 0; left: 0; right: 0; padding: 16px 20px; padding-top: max(16px, env(safe-area-inset-top)); display: flex; align-items: center; gap: 12px; z-index: 10; background: linear-gradient(180deg, rgba(0,0,0,0.6), transparent); }
+.cam-close { background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 36px; height: 36px; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+.cam-title { color: #fff; font-size: 15px; font-weight: 700; flex: 1; }
+.cam-flash { background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 36px; height: 36px; color: #fff; font-size: 16px; cursor: pointer; }
+.cam-view { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.cam-shelf { width: 100%; height: 100%; background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 25%, #5a4a3a 26%, #4a3a2a 50%, #5a4a3a 51%, #4a3a2a 75%, #3a3a3a 76%, #2a2a2a 100%); position: relative; overflow: hidden; }
+.cam-shelf.messy::before { content: '🥤 🍪 🥫 🍫 🍜'; position: absolute; top: 18%; left: 10%; right: 10%; font-size: 32px; letter-spacing: 12px; transform: rotate(-3deg); filter: blur(0.5px); }
+.cam-shelf.messy::after { content: '🥫 🍫 🍜 🥤'; position: absolute; top: 52%; left: 5%; right: 15%; font-size: 32px; letter-spacing: 18px; transform: rotate(2deg); }
+.cam-shelf.tidy::before { content: '🥤 🥤 🥤 🥤 🥤'; position: absolute; top: 18%; left: 10%; right: 10%; font-size: 32px; letter-spacing: 12px; }
+.cam-shelf.tidy::after { content: '🍪 🍪 🍪 🍪 🍪'; position: absolute; top: 52%; left: 10%; right: 10%; font-size: 32px; letter-spacing: 12px; }
+.cam-viewfinder { position: absolute; inset: 80px 30px 200px; pointer-events: none; }
+.cam-viewfinder::before, .cam-viewfinder::after { content: ''; position: absolute; width: 30px; height: 30px; border-color: #fff; border-style: solid; }
+.cam-viewfinder::before { top: 0; left: 0; border-width: 3px 0 0 3px; }
+.cam-viewfinder::after { bottom: 0; right: 0; border-width: 0 3px 3px 0; }
+.cam-corner-tr, .cam-corner-bl { position: absolute; width: 30px; height: 30px; border-color: #fff; border-style: solid; pointer-events: none; }
+.cam-corner-tr { top: 80px; right: 30px; border-width: 3px 3px 0 0; }
+.cam-corner-bl { bottom: 200px; left: 30px; border-width: 0 0 3px 3px; }
+.cam-tip { position: absolute; bottom: 200px; left: 30px; right: 30px; text-align: center; color: #fff; font-size: 13px; font-weight: 500; padding-top: 16px; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
+.cam-controls { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom) + 10px); display: flex; align-items: center; justify-content: space-around; background: linear-gradient(0deg, rgba(0,0,0,0.6), transparent); }
+.cam-capture { width: 76px; height: 76px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 4px solid #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.1s; }
+.cam-capture:active { transform: scale(0.92); }
+.cam-capture-inner { width: 60px; height: 60px; border-radius: 50%; background: #fff; }
+.cam-side-btn { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); border: none; color: #fff; font-size: 22px; cursor: pointer; backdrop-filter: blur(10px); }
+.cam-flash-anim { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 50; }
+.cam-flash-anim.flash { animation: flashAnim 0.5s; }
+@keyframes flashAnim { 0% { opacity: 0; } 20% { opacity: 0.9; } 100% { opacity: 0; } }
+
+/* IN-PROGRESS */
+#screen-progress { background: #FAF8F4; }
+.progress-hero { background: linear-gradient(135deg, #2E7D32, #66BB6A); padding: 30px 20px; padding-top: max(30px, env(safe-area-inset-top) + 30px); color: #fff; text-align: center; }
+.progress-hero .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+.progress-hero h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.progress-hero p { font-size: 13px; opacity: 0.9; }
+.progress-timer { font-size: 38px; font-weight: 800; color: #fff; margin: 18px 0 4px; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.progress-timer-lbl { font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.8px; }
+.checklist-card { background: #fff; border-radius: 16px; border: 1px solid #EDE9E0; padding: 16px; margin: 16px; }
+.checklist-card h3 { font-size: 13px; font-weight: 700; color: #2E7D32; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+.check-item { display: flex; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid #F5F2EA; cursor: pointer; }
+.check-item:last-child { border-bottom: none; }
+.check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #ccc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.check-item.done .check-box { background: #2E7D32; border-color: #2E7D32; color: #fff; font-size: 14px; }
+.check-item.done .check-box::after { content: '✓'; }
+.check-item .lbl { font-size: 13px; color: #1a1a1a; font-weight: 500; flex: 1; }
+.check-item.done .lbl { color: #aaa; text-decoration: line-through; }
+.photo-preview-card { background: #fff; border-radius: 16px; border: 1px solid #EDE9E0; padding: 14px; margin: 0 16px 16px; }
+.photo-preview-card h3 { font-size: 13px; font-weight: 700; color: #2E7D32; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+.photo-thumb { width: 100%; height: 120px; border-radius: 12px; background: linear-gradient(180deg, #3a3a3a, #5a4a3a, #3a3a3a); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.8); font-size: 12px; font-weight: 600; position: relative; overflow: hidden; }
+.photo-thumb.before::before { content: 'BEFORE'; position: absolute; top: 8px; left: 8px; background: #C62828; color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; }
+.photo-thumb.after::before { content: 'AFTER'; position: absolute; top: 8px; left: 8px; background: #2E7D32; color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; }
+.photo-thumb-content { font-size: 32px; letter-spacing: 8px; }
+.action-bar { padding: 0 16px 20px; padding-bottom: max(20px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; }
+
+/* REVIEW */
+.review-photos { display: flex; gap: 10px; margin: 16px; }
+.review-photo { flex: 1; border-radius: 14px; overflow: hidden; }
+.review-photo .ph { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 28px; letter-spacing: 6px; position: relative; }
+.review-photo .ph.before { background: linear-gradient(180deg, #3a3a3a 0%, #5a4a3a 50%, #3a3a3a 100%); }
+.review-photo .ph.after { background: linear-gradient(180deg, #2a3a2a 0%, #4a5a3a 50%, #2a3a2a 100%); }
+.review-photo .lbl { padding: 8px; text-align: center; font-size: 11px; font-weight: 700; background: #fff; }
+.review-photo.before .lbl { color: #C62828; }
+.review-photo.after .lbl { color: #2E7D32; }
+.notes-input { width: calc(100% - 32px); margin: 0 16px 16px; padding: 12px 14px; border: 1.5px solid #EDE9E0; border-radius: 12px; background: #fff; font-size: 13px; resize: none; min-height: 70px; }
+.notes-input:focus { outline: none; border-color: #2E7D32; }
+
+/* COMPLETE */
+#screen-complete { background: linear-gradient(135deg, #2E7D32, #66BB6A); justify-content: center; align-items: center; padding: 30px; color: #fff; text-align: center; }
+.complete-burst { font-size: 80px; animation: burst 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes burst { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 60% { transform: scale(1.2) rotate(10deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+.complete-title { font-size: 28px; font-weight: 800; margin: 16px 0 6px; letter-spacing: -0.5px; animation: fadeUp 0.6s 0.3s both; }
+.complete-sub { font-size: 13px; opacity: 0.9; animation: fadeUp 0.6s 0.4s both; }
+.complete-reward-box { background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 20px 30px; margin: 26px 0; backdrop-filter: blur(10px); animation: fadeUp 0.6s 0.5s both; }
+.complete-reward-lbl { font-size: 11px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.complete-reward-val { font-size: 36px; font-weight: 800; margin-top: 4px; letter-spacing: -1px; }
+.complete-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; animation: fadeUp 0.6s 0.6s both; }
+.complete-actions button { padding: 14px; border-radius: 14px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; border: none; }
+.complete-actions .primary { background: #fff; color: #2E7D32; }
+.complete-actions .secondary { background: rgba(255,255,255,0.2); color: #fff; border: 1.5px solid rgba(255,255,255,0.4); }
+
+/* ACTIVE GIG BANNER */
+.active-banner { position: absolute; top: 14px; left: 14px; right: 14px; background: #2E7D32; color: #fff; padding: 10px 14px; border-radius: 12px; display: none; align-items: center; gap: 10px; z-index: 80; box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4); animation: slideDown 0.3s ease-out; cursor: pointer; }
+@keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.active-banner.show { display: flex; }
+.active-banner .pulse { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: pulse2 1.5s infinite; flex-shrink: 0; }
+@keyframes pulse2 { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.6; } }
+.active-banner .text { flex: 1; font-size: 12px; font-weight: 600; min-width: 0; overflow: hidden; }
+.active-banner .text b { display: block; font-size: 11px; font-weight: 700; }
+.active-banner .text span { font-size: 10px; opacity: 0.9; }
+.active-banner .arr { font-size: 18px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="inner">
+    <div class="toast" id="toast"></div>
+
+    <!-- SPLASH -->
+    <div class="screen" id="screen-splash">
+      <div class="splash-logo">💵</div>
+      <div class="splash-title">ShelfCash</div>
+      <div class="splash-sub">Earn cash on every aisle</div>
+      <div class="splash-loader"></div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="screen hidden" id="screen-login">
+      <div class="login-logo">💵</div>
+      <div class="login-title">Welcome back</div>
+      <div class="login-sub">Sign in to start earning</div>
+      <div class="input-group">
+        <div class="input-label">Email</div>
+        <div class="input-with-icon">
+          <span class="icon">✉️</span>
+          <input type="email" class="input-field" id="loginEmail" value="raphael.hhp@binus.ac.id">
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-label">Password</div>
+        <div class="input-with-icon">
+          <span class="icon">🔒</span>
+          <input type="password" class="input-field" id="loginPass" value="demopassword">
+        </div>
+      </div>
+      <div class="forgot" onclick="toast('Password reset link sent (demo)')">Forgot password?</div>
+      <button class="login-btn" onclick="doLogin()">Sign In</button>
+      <div class="divider-text">or continue with</div>
+      <button class="oauth-btn" onclick="doLogin()"><span>🔵</span> Continue with Google</button>
+      <button class="oauth-btn" onclick="doLogin()"><span>🍎</span> Continue with Apple</button>
+      <div class="signup-link">Don't have an account? <b onclick="toast('Sign up coming soon (demo)')">Sign up</b></div>
+      <div class="demo-hint"><b>🎯 Demo mode</b>Just tap Sign In — credentials pre-filled</div>
+    </div>
+
+    <!-- HOME -->
+    <div class="screen hidden" id="screen-home">
+      <div class="header">
+        <div class="row">
+          <div>
+            <div class="greet-sub">Good afternoon,</div>
+            <div class="greet-name">Raphael 👋</div>
+          </div>
+          <div style="display:flex;align-items:center;">
+            <button class="bell-btn" onclick="switchScreen('notifications')">🔔<div class="bell-dot"></div></button>
+            <div class="balance-box">
+              <div class="balance-lbl">Balance</div>
+              <div class="balance-val">IDR 142,500</div>
+            </div>
+          </div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" id="gtab-near" onclick="setGigTab('near')">📍 Nearby</button>
+          <button class="tab" id="gtab-all" onclick="setGigTab('all')">🗺️ All Gigs</button>
+        </div>
+      </div>
+      <div class="active-banner" id="activeBanner" onclick="resumeActiveGig()">
+        <div class="pulse"></div>
+        <div class="text"><b>Active Gig in Progress</b><span id="activeBannerText">Tidy Up Shelves · 2:14 left</span></div>
+        <div class="arr">›</div>
+      </div>
+      <div class="scroll" id="gigs-list"></div>
+      <div class="bottom-nav">
+        <button class="nav-btn active" onclick="switchScreen('home')"><span class="ico">🏠</span><span class="lbl">Gigs</span><div class="dot"></div></button>
+        <button class="nav-btn" onclick="switchScreen('wallet')"><span class="ico">💰</span><span class="lbl">Wallet</span></button>
+        <button class="nav-btn" onclick="switchScreen('profile')"><span class="ico">👤</span><span class="lbl">Profile</span></button>
+      </div>
+    </div>
+
+    <!-- DETAIL -->
+    <div class="screen hidden" id="screen-detail">
+      <div class="header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="back-btn" onclick="goBack()">←</button>
+          <span class="detail-title" id="dt-title">Tidy Up Shelves</span>
+          <button class="heart-btn" onclick="toggleFav(this)">♡</button>
+        </div>
+      </div>
+      <div class="scroll" style="padding:16px 16px 100px;">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
+          <div class="brand-ico" id="dt-ico" style="background:#FFEAEC;">🥤</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:700;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;" id="dt-store">📍 Ranch Market, Senayan City</div>
+            <div style="font-size:12px;color:#888;margin-top:2px;" id="dt-brand">Request by Coca-Cola</div>
+          </div>
+        </div>
+        <div class="ref-img"><span style="font-size:40px;">🛒</span><span style="font-size:12px;color:#888;font-weight:500;">Task reference image</span></div>
+        <div class="instr-box">
+          <b>Task Instructions</b>
+          <p id="dt-instr">1. Locate the brand section.<br>2. Take a BEFORE photo.<br>3. Tidy &amp; face products forward.<br>4. Take an AFTER photo.<br>5. Submit for reward.</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="l">Reward</div><div class="v g" id="dt-reward">IDR 7,220</div></div>
+          <div class="stat-card"><div class="l">Time</div><div class="v" id="dt-time">~2 min</div></div>
+          <div class="stat-card"><div class="l">Distance</div><div class="v" id="dt-dist">3m</div></div>
+        </div>
+        <button class="cta-btn" onclick="acceptGig()">Accept &amp; Navigate to Store</button>
+        <div style="height:8px;"></div>
+        <button class="cta-btn secondary" onclick="goBack()">Save for Later</button>
+      </div>
+    </div>
+
+    <!-- NAVIGATE -->
+    <div class="screen hidden" id="screen-navigate">
+      <div class="map-area">
+        <div class="map-streets">
+          <svg viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice">
+            <path d="M -50 200 L 450 230" stroke="#fff" stroke-width="18" opacity="0.6"/>
+            <path d="M -50 380 L 450 400" stroke="#fff" stroke-width="14" opacity="0.5"/>
+            <path d="M 100 -50 L 130 650" stroke="#fff" stroke-width="14" opacity="0.5"/>
+            <path d="M 280 -50 L 310 650" stroke="#fff" stroke-width="16" opacity="0.6"/>
+            <path d="M 130 470 L 130 320 L 280 310" stroke="#2E7D32" stroke-width="5" stroke-dasharray="10 6" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="map-pin user" style="top: 78%; left: 32%;">
+          <div class="map-pin-marker"></div>
+        </div>
+        <div class="map-pin" style="top: 52%; left: 70%;">
+          <div class="map-pin-marker"><span>🛒</span></div>
+        </div>
+        <div class="nav-top-card">
+          <div class="row">
+            <div>
+              <div class="nav-eta">3 min</div>
+              <div class="nav-dist">Walking · <span id="navDist">3m</span></div>
+            </div>
+            <button class="back-btn" onclick="cancelGig()">✕</button>
+          </div>
+          <div class="nav-dest">📍 <b id="navStore">Ranch Market, Senayan City</b><br><span style="color:#888;font-size:11px;">Lower Ground Floor · Aisle 7</span></div>
+        </div>
+        <div class="nav-bot-card">
+          <div class="nav-step">
+            <div class="nav-step-ico">🚶</div>
+            <div class="nav-step-text">
+              <b>Walk straight ahead</b>
+              <span>Then turn right at the cosmetics section</span>
+            </div>
+          </div>
+          <button class="cta-btn" onclick="arrived()">I've Arrived</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMERA BEFORE -->
+    <div class="screen hidden" id="screen-camera-before">
+      <div class="cam-header">
+        <button class="cam-close" onclick="cancelGig()">✕</button>
+        <div class="cam-title">Step 1: Before Photo</div>
+        <button class="cam-flash" onclick="toast('Flash toggled')">⚡</button>
+      </div>
+      <div class="cam-view">
+        <div class="cam-shelf messy"></div>
+        <div class="cam-viewfinder"></div>
+        <div class="cam-corner-tr"></div>
+        <div class="cam-corner-bl"></div>
+        <div class="cam-tip">📸 Position the shelf in frame</div>
+        <div class="cam-flash-anim" id="flashBefore"></div>
+      </div>
+      <div class="cam-controls">
+        <button class="cam-side-btn" onclick="toast('Gallery (demo)')">🖼️</button>
+        <div class="cam-capture" onclick="capturePhoto('before')">
+          <div class="cam-capture-inner"></div>
+        </div>
+        <button class="cam-side-btn" onclick="toast('Camera flip (demo)')">🔄</button>
+      </div>
+    </div>
+
+    <!-- IN PROGRESS -->
+    <div class="screen hidden" id="screen-progress">
+      <div class="progress-hero">
+        <div class="badge">⏱ Task in Progress</div>
+        <h2 id="progStoreName">Ranch Market</h2>
+        <p id="progTaskName">Tidying Coca-Cola shelves</p>
+        <div class="progress-timer" id="progTimer">02:00</div>
+        <div class="progress-timer-lbl">Time remaining</div>
+      </div>
+      <div class="scroll" style="padding-bottom: 200px;">
+        <div class="checklist-card">
+          <h3>✅ Task Checklist</h3>
+          <div class="check-item done" id="check1"><div class="check-box"></div><div class="lbl">Take BEFORE photo</div></div>
+          <div class="check-item" id="check2" onclick="toggleCheck('check2')"><div class="check-box"></div><div class="lbl">Locate the brand section</div></div>
+          <div class="check-item" id="check3" onclick="toggleCheck('check3')"><div class="check-box"></div><div class="lbl">Tidy &amp; face products forward</div></div>
+          <div class="check-item" id="check4" onclick="toggleCheck('check4')"><div class="check-box"></div><div class="lbl">Remove any expired items</div></div>
+          <div class="check-item" id="check5" onclick="toggleCheck('check5')"><div class="check-box"></div><div class="lbl">Take AFTER photo</div></div>
+        </div>
+        <div class="photo-preview-card">
+          <h3>📷 Before Photo Captured</h3>
+          <div class="photo-thumb before">
+            <div class="photo-thumb-content">🥤 🍪 🥫</div>
+          </div>
+        </div>
+      </div>
+      <div class="action-bar">
+        <button class="cta-btn" onclick="takeAfter()">Done Tidying — Take After Photo</button>
+        <button class="cta-btn danger" onclick="cancelGig()">Cancel Gig</button>
+      </div>
+    </div>
+
+    <!-- CAMERA AFTER -->
+    <div class="screen hidden" id="screen-camera-after">
+      <div class="cam-header">
+        <button class="cam-close" onclick="switchScreen('progress')">✕</button>
+        <div class="cam-title">Step 2: After Photo</div>
+        <button class="cam-flash" onclick="toast('Flash toggled')">⚡</button>
+      </div>
+      <div class="cam-view">
+        <div class="cam-shelf tidy"></div>
+        <div class="cam-viewfinder"></div>
+        <div class="cam-corner-tr"></div>
+        <div class="cam-corner-bl"></div>
+        <div class="cam-tip">✨ Capture your tidied shelf</div>
+        <div class="cam-flash-anim" id="flashAfter"></div>
+      </div>
+      <div class="cam-controls">
+        <button class="cam-side-btn" onclick="toast('Gallery (demo)')">🖼️</button>
+        <div class="cam-capture" onclick="capturePhoto('after')">
+          <div class="cam-capture-inner"></div>
+        </div>
+        <button class="cam-side-btn" onclick="toast('Camera flip (demo)')">🔄</button>
+      </div>
+    </div>
+
+    <!-- REVIEW -->
+    <div class="screen hidden" id="screen-review">
+      <div class="header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="back-btn" onclick="switchScreen('camera-after')">←</button>
+          <span class="detail-title">Review &amp; Submit</span>
+        </div>
+      </div>
+      <div class="scroll" style="padding-bottom: 200px;">
+        <div style="padding:14px 16px 0;">
+          <div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Compare your photos</div>
+          <div style="font-size:12px;color:#888;">Make sure the difference is clear</div>
+        </div>
+        <div class="review-photos">
+          <div class="review-photo before">
+            <div class="ph before">🥤🍪🥫</div>
+            <div class="lbl">BEFORE</div>
+          </div>
+          <div class="review-photo after">
+            <div class="ph after">🥤🥤🥤</div>
+            <div class="lbl">AFTER</div>
+          </div>
+        </div>
+        <div style="padding:0 16px;">
+          <div class="info-card">
+            <div class="info-hdr">Task Summary</div>
+            <div class="info-row"><span class="k">Gig</span><span class="v" id="revTitle">Tidy Up Shelves</span></div>
+            <div class="info-row"><span class="k">Store</span><span class="v" id="revStore">Ranch Market</span></div>
+            <div class="info-row"><span class="k">Time taken</span><span class="v" id="revTime">1 min 47 sec</span></div>
+            <div class="info-row"><span class="k">Reward</span><span class="v" style="color:#2E7D32;" id="revReward">IDR 7,220</span></div>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#2E7D32;text-transform:uppercase;letter-spacing:0.8px;margin:14px 0 6px;">Add notes (optional)</div>
+        </div>
+        <textarea class="notes-input" placeholder="Any issues or comments for the brand..."></textarea>
+      </div>
+      <div class="action-bar">
+        <button class="cta-btn" onclick="submitGig()">Submit for Review</button>
+        <button class="cta-btn secondary" onclick="switchScreen('camera-after')">Retake Photos</button>
+      </div>
+    </div>
+
+    <!-- COMPLETE -->
+    <div class="screen hidden" id="screen-complete">
+      <div class="complete-burst">🎉</div>
+      <div class="complete-title">Gig Complete!</div>
+      <div class="complete-sub">Your submission is being reviewed</div>
+      <div class="complete-reward-box">
+        <div class="complete-reward-lbl">You Earned</div>
+        <div class="complete-reward-val" id="completeReward">IDR 7,220</div>
+      </div>
+      <div class="complete-actions">
+        <button class="primary" onclick="finishGig('wallet')">View in Wallet</button>
+        <button class="secondary" onclick="finishGig('home')">Find Another Gig</button>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="screen hidden" id="screen-notifications">
+      <div class="header">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="back-btn" onclick="goBack()">←</button>
+          <span class="detail-title">Notifications</span>
+          <button class="back-btn" style="margin-left:auto;" onclick="markAllRead()">✓</button>
+        </div>
+      </div>
+      <div class="scroll" id="notif-list"></div>
+    </div>
+
+    <!-- WALLET -->
+    <div class="screen hidden" id="screen-wallet">
+      <div class="header">
+        <div style="font-size:21px;font-weight:700;color:#1a1a1a;">My Wallet</div>
+        <div class="wallet-card">
+          <div class="wallet-lbl">Total Earned</div>
+          <div class="wallet-tot" id="walletTotal">IDR 482,750</div>
+          <div class="wstats">
+            <div class="wstat"><div class="l">Gigs done</div><div class="v" id="walletGigs">47</div></div>
+            <div class="wstat"><div class="l">This week</div><div class="v">8</div></div>
+            <div class="wstat"><div class="l">Rank</div><div class="v g">⭐ Pro</div></div>
+          </div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" id="wtab-earn" onclick="setWalTab('earn')">💰 Earnings</button>
+          <button class="tab" id="wtab-hist" onclick="setWalTab('hist')">📋 History</button>
+        </div>
+      </div>
+      <div class="scroll" id="wallet-content"></div>
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="switchScreen('home')"><span class="ico">🏠</span><span class="lbl">Gigs</span></button>
+        <button class="nav-btn active" onclick="switchScreen('wallet')"><span class="ico">💰</span><span class="lbl">Wallet</span><div class="dot"></div></button>
+        <button class="nav-btn" onclick="switchScreen('profile')"><span class="ico">👤</span><span class="lbl">Profile</span></button>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="screen hidden" id="screen-profile">
+      <div class="header">
+        <div style="font-size:21px;font-weight:700;color:#1a1a1a;">Profile</div>
+      </div>
+      <div class="scroll">
+        <div style="padding:20px 18px 0;text-align:center;">
+          <div class="avatar">RH<div class="verified">✓</div></div>
+          <div class="pname">Raphael H.H.P</div>
+          <div class="psub">@raphaelhhp · Jakarta, Indonesia</div>
+          <div class="pbadge">⭐ Pro Gigger · Level 12</div>
+        </div>
+        <div style="padding:0 18px;">
+          <div class="stats3">
+            <div class="st3"><div class="v" id="profGigs">47</div><div class="l">Gigs Done</div></div>
+            <div class="st3"><div class="v" style="color:#2E7D32;">98%</div><div class="l">Success</div></div>
+            <div class="st3"><div class="v">4.9★</div><div class="l">Rating</div></div>
+          </div>
+          <div class="info-card">
+            <div class="info-hdr">Personal Info</div>
+            <div class="info-row"><span class="k">Full Name</span><span class="v">Raphael H.H.P</span></div>
+            <div class="info-row"><span class="k">Email</span><span class="v">raphael.hhp@binus.ac.id</span></div>
+            <div class="info-row"><span class="k">Phone</span><span class="v">+62 812-3456-7890</span></div>
+            <div class="info-row"><span class="k">Birthday</span><span class="v">14 March 2004</span></div>
+            <div class="info-row"><span class="k">Member since</span><span class="v">Oct 3, 2026</span></div>
+          </div>
+          <div class="info-card">
+            <div class="info-hdr">Activity</div>
+            <div class="info-row"><span class="k">Total Earnings</span><span class="v" style="color:#2E7D32;">IDR 482,750</span></div>
+            <div class="info-row"><span class="k">Avg per gig</span><span class="v">IDR 10,271</span></div>
+            <div class="info-row"><span class="k">Favorite store</span><span class="v">Ranch Market</span></div>
+            <div class="info-row"><span class="k">Streak</span><span class="v" style="color:#E65100;">🔥 7 days</span></div>
+          </div>
+          <div class="info-hdr" style="padding:0 0 6px;">Achievements</div>
+          <div class="achv-scroll">
+            <div class="ach"><div class="e">🏆</div><div class="n">First Gig</div><div class="d">Earned</div></div>
+            <div class="ach"><div class="e">⚡</div><div class="n">Speed King</div><div class="d">10 in a day</div></div>
+            <div class="ach"><div class="e">🔥</div><div class="n">On Fire</div><div class="d">7-day streak</div></div>
+            <div class="ach"><div class="e">💎</div><div class="n">Premium</div><div class="d">Pro tier</div></div>
+            <div class="ach" style="opacity:0.45;"><div class="e">🌟</div><div class="n">Legend</div><div class="d">Locked</div></div>
+          </div>
+          <div class="info-hdr" style="padding:18px 0 4px;">Settings</div>
+          <div class="menu-row" onclick="toast('Notifications coming soon')"><span class="i">🔔</span><span class="l">Notifications</span><span class="r">›</span></div>
+          <div class="menu-row" onclick="toast('Payout settings coming soon')"><span class="i">💳</span><span class="l">Payout Settings</span><span class="r">›</span></div>
+          <div class="menu-row" onclick="toast('Privacy settings coming soon')"><span class="i">🔒</span><span class="l">Privacy &amp; Security</span><span class="r">›</span></div>
+          <div class="menu-row" onclick="toast('Help center coming soon')"><span class="i">❓</span><span class="l">Help &amp; Support</span><span class="r">›</span></div>
+          <div class="menu-row" style="border:none;" onclick="signOut()"><span class="i" style="color:#C62828;">🚪</span><span class="l" style="color:#C62828;">Sign Out</span><span class="r">›</span></div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="switchScreen('home')"><span class="ico">🏠</span><span class="lbl">Gigs</span></button>
+        <button class="nav-btn" onclick="switchScreen('wallet')"><span class="ico">💰</span><span class="lbl">Wallet</span></button>
+        <button class="nav-btn active" onclick="switchScreen('profile')"><span class="ico">👤</span><span class="lbl">Profile</span><div class="dot"></div></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const gigsNearby = [
+  { title:"Tidy Up Shelves", store:"Ranch Market, Senayan City", brand:"Coca-Cola", ico:"🥤", bg:"#FFEAEC", dist:"3m", reward:"IDR 7,220", time:"~2 min", cat:"Shelf Tidy", cBg:"#E8F5E9", cFg:"#2E7D32" },
+  { title:"Check Price Tags", store:"Indomaret, Sudirman", brand:"Indomie", ico:"🍜", bg:"#FFF3E0", dist:"201m", reward:"IDR 5,500", time:"~3 min", cat:"Audit", cBg:"#FFF3E0", cFg:"#E65100" },
+  { title:"Promo Standee Check", store:"Family Mart, Senayan", brand:"Pocari Sweat", ico:"🥤", bg:"#E1F5FE", dist:"450m", reward:"IDR 6,800", time:"~3 min", cat:"Verify", cBg:"#F3E5F5", cFg:"#6A1B9A" },
+  { title:"Count Stock Display", store:"Ranch Market, Senayan", brand:"Oreo", ico:"🍪", bg:"#FFF8E1", dist:"680m", reward:"IDR 8,500", time:"~4 min", cat:"Audit", cBg:"#FFF3E0", cFg:"#E65100" },
+  { title:"Restock Display", store:"Giant, Kemang", brand:"Aqua", ico:"💧", bg:"#E3F2FD", dist:"850m", reward:"IDR 9,800", time:"~5 min", cat:"Restock", cBg:"#E3F2FD", cFg:"#1565C0" },
+];
+const gigsAll = [
+  ...gigsNearby,
+  { title:"Sign Verification", store:"Alfamart, Blok M", brand:"Unilever", ico:"🏷️", bg:"#F3E5F5", dist:"1.2km", reward:"IDR 4,500", time:"~1 min", cat:"Verify", cBg:"#F3E5F5", cFg:"#6A1B9A" },
+  { title:"Endcap Refresh", store:"Hypermart, PIM", brand:"Nestle", ico:"🍫", bg:"#EFEBE9", dist:"2.3km", reward:"IDR 12,500", time:"~6 min", cat:"Shelf Tidy", cBg:"#E8F5E9", cFg:"#2E7D32" },
+  { title:"Product Facing", store:"Carrefour, Lebak Bulus", brand:"Nestle", ico:"🍫", bg:"#EFEBE9", dist:"5.1km", reward:"IDR 11,000", time:"~4 min", cat:"Shelf Tidy", cBg:"#E8F5E9", cFg:"#2E7D32" },
+  { title:"Cooler Tidy & Stock", store:"Circle K, Kuningan", brand:"Coca-Cola", ico:"🥤", bg:"#FFEAEC", dist:"3.4km", reward:"IDR 8,800", time:"~5 min", cat:"Restock", cBg:"#E3F2FD", cFg:"#1565C0" },
+  { title:"Expiry Date Check", store:"Superindo, Permata Hijau", brand:"Yakult", ico:"🥛", bg:"#FFF8E1", dist:"4.2km", reward:"IDR 7,500", time:"~4 min", cat:"Audit", cBg:"#FFF3E0", cFg:"#E65100" },
+  { title:"Display Setup", store:"Transmart, Cempaka", brand:"Le Minerale", ico:"💧", bg:"#E3F2FD", dist:"8.1km", reward:"IDR 15,000", time:"~8 min", cat:"Restock", cBg:"#E3F2FD", cFg:"#1565C0" },
+  { title:"Real Estate Sign Check", store:"Pondok Indah Area", brand:"Century 21", ico:"🏠", bg:"#FFF8E1", dist:"9.4km", reward:"IDR 6,000", time:"~3 min", cat:"Verify", cBg:"#F3E5F5", cFg:"#6A1B9A" },
+];
+const earnings = [
+  { ico:"🥤", lbl:"Coca-Cola · Shelf Tidy", sub:"Ranch Market · Today, 2:14pm", amt:"+IDR 7,220" },
+  { ico:"💧", lbl:"Aqua · Restock", sub:"Giant, Kemang · Today, 11:02am", amt:"+IDR 9,800" },
+  { ico:"💳", lbl:"Withdrawal to GoPay", sub:"Yesterday, 6:32pm", amt:"−IDR 50,000" },
+  { ico:"🍜", lbl:"Indomie · Price Check", sub:"Indomaret · Yesterday, 4:18pm", amt:"+IDR 5,500" },
+  { ico:"🍪", lbl:"Oreo · Stock Count", sub:"Ranch Market · 2 days ago", amt:"+IDR 8,500" },
+  { ico:"🎁", lbl:"Weekly Streak Bonus", sub:"3 days ago", amt:"+IDR 10,000" },
+  { ico:"🏷️", lbl:"Unilever · Sign Check", sub:"Alfamart · 3 days ago", amt:"+IDR 4,500" },
+  { ico:"🍫", lbl:"Nestle · Endcap Refresh", sub:"Hypermart · 4 days ago", amt:"+IDR 12,500" },
+  { ico:"💳", lbl:"Withdrawal to BCA", sub:"5 days ago", amt:"−IDR 100,000" },
+  { ico:"🥛", lbl:"Yakult · Expiry Check", sub:"Superindo · 6 days ago", amt:"+IDR 7,500" },
+];
+const history = [
+  { ico:"🥤", lbl:"Tidy Up Shelves", sub:"Coca-Cola · Ranch Market", date:"Today, 2:14pm", status:"approved" },
+  { ico:"💧", lbl:"Restock Display", sub:"Aqua · Giant, Kemang", date:"Today, 11:02am", status:"approved" },
+  { ico:"🍜", lbl:"Check Price Tags", sub:"Indomie · Indomaret", date:"Yesterday", status:"approved" },
+  { ico:"🍪", lbl:"Count Stock Display", sub:"Oreo · Ranch Market", date:"Yesterday", status:"pending" },
+  { ico:"🏷️", lbl:"Sign Verification", sub:"Unilever · Alfamart", date:"2 days ago", status:"approved" },
+  { ico:"🍫", lbl:"Endcap Refresh", sub:"Nestle · Hypermart", date:"3 days ago", status:"approved" },
+  { ico:"🥛", lbl:"Expiry Date Check", sub:"Yakult · Superindo", date:"4 days ago", status:"rejected" },
+  { ico:"🏠", lbl:"Real Estate Sign Check", sub:"Century 21 · Pondok Indah", date:"5 days ago", status:"approved" },
+  { ico:"🥤", lbl:"Cooler Tidy", sub:"Coca-Cola · Circle K", date:"6 days ago", status:"approved" },
+];
+const notifications = [
+  { ico:"🔥", iconBg:"#FFF3E0", title:"New gig near you!", desc:"Coca-Cola needs a shelf tidy at Ranch Market — only 3m away", time:"2 min ago", unread:true },
+  { ico:"💰", iconBg:"#E8F5E9", title:"Payment received", desc:"IDR 7,220 was added to your wallet from Aqua", time:"1 hour ago", unread:true },
+  { ico:"⭐", iconBg:"#FFF8E1", title:"You leveled up!", desc:"Congrats! You're now a Level 12 Pro Gigger", time:"3 hours ago", unread:true },
+  { ico:"🎁", iconBg:"#F3E5F5", title:"Streak bonus earned", desc:"7-day streak bonus of IDR 10,000 added to your wallet", time:"Yesterday", unread:false },
+  { ico:"✅", iconBg:"#E8F5E9", title:"Gig approved", desc:"Your Oreo stock count gig was approved. IDR 8,500 earned", time:"Yesterday", unread:false },
+  { ico:"📢", iconBg:"#E3F2FD", title:"New brand: Le Minerale", desc:"Le Minerale just joined ShelfCash with high-paying gigs", time:"2 days ago", unread:false },
+  { ico:"⚠️", iconBg:"#FFEBEE", title:"Gig rejected", desc:"Your Yakult gig was rejected — photos were too blurry", time:"4 days ago", unread:false },
+];
+
+let curScreen = 'splash';
+let prevScreen = 'home';
+let curGigTab = 'near';
+let curWalTab = 'earn';
+let curGigList = gigsNearby;
+let activeGig = null;
+let timerInterval = null;
+let timerSeconds = 120;
+let userBalance = 142500;
+let totalEarned = 482750;
+let totalGigs = 47;
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function switchScreen(s) {
+  prevScreen = curScreen;
+  curScreen = s;
+  document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
+  const target = document.getElementById('screen-' + s);
+  target.classList.remove('hidden');
+  target.classList.add('slide-in');
+  setTimeout(() => target.classList.remove('slide-in'), 300);
+  if (s === 'wallet') renderWallet();
+  if (s === 'notifications') renderNotifications();
+  const sc = target.querySelector('.scroll');
+  if (sc) sc.scrollTop = 0;
+}
+
+function goBack() {
+  // Smart back: go to last sensible screen
+  if (curScreen === 'detail') switchScreen('home');
+  else if (curScreen === 'notifications') switchScreen('home');
+  else switchScreen('home');
+}
+
+function doLogin() {
+  const splash = document.getElementById('screen-login');
+  splash.style.transition = 'opacity 0.4s';
+  splash.style.opacity = '0';
+  setTimeout(() => {
+    splash.style.opacity = '';
+    splash.style.transition = '';
+    switchScreen('home');
+    toast('Welcome back, Raphael! 👋');
+  }, 400);
+}
+
+function signOut() {
+  if (confirm('Sign out of ShelfCash?')) {
+    switchScreen('login');
+    toast('Signed out successfully');
+  }
+}
+
+function renderGigs() {
+  const list = curGigTab === 'near' ? gigsNearby : gigsAll;
+  curGigList = list;
+  const c = document.getElementById('gigs-list');
+  let html = '<div class="section-hdr"><b>' + (curGigTab==='near' ? 'Gigs nearby' : 'All available gigs') + '</b><i>' + list.length + ' available</i></div>';
+  list.forEach((g, i) => {
+    html += '<div class="gig-card" onclick="showDetail(' + i + ')"><div class="card-inner"><div class="brand-ico" style="background:' + g.bg + ';">' + g.ico + '</div><div class="card-body"><div class="card-top"><span class="card-title">' + g.title + '</span><span class="reward-pill">' + g.reward + '</span></div><div class="card-store">' + g.store + '</div><div class="card-brand">By ' + g.brand + '</div><div class="card-foot"><span class="tag" style="background:' + g.cBg + ';color:' + g.cFg + ';">' + g.cat + '</span><span class="meta">⏱ ' + g.time + '</span><span class="meta ml-auto">📍 ' + g.dist + '</span></div></div></div></div>';
+  });
+  if (curGigTab === 'all') {
+    html += '<div class="section-lbl">Coming soon</div><div class="empty"><span class="e">🔜</span>Brand campaigns going live next week.<br>Stay tuned for higher payouts!</div>';
+  }
+  c.innerHTML = html;
+}
+
+function setGigTab(t) {
+  curGigTab = t;
+  document.getElementById('gtab-near').classList.toggle('active', t==='near');
+  document.getElementById('gtab-all').classList.toggle('active', t==='all');
+  renderGigs();
+}
+
+function renderWallet() {
+  document.getElementById('walletTotal').textContent = 'IDR ' + totalEarned.toLocaleString('en-US').replace(/,/g, ',');
+  document.getElementById('walletGigs').textContent = totalGigs;
+  const c = document.getElementById('wallet-content');
+  let html = '';
+  if (curWalTab === 'earn') {
+    html += '<div style="padding:16px 18px 0;"><div class="section-lbl" style="margin:0 0 4px;padding:0;">Last 7 days</div><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;"><span style="font-size:22px;font-weight:700;color:#2E7D32;">IDR 78,420</span><span style="font-size:11px;color:#2E7D32;font-weight:600;">↑ 24% vs last week</span></div><div class="chart-bar">';
+    const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const vals = [25, 60, 40, 80, 55, 95, 70];
+    vals.forEach((v, i) => { html += '<div class="cb-item"><div class="cb-bar" style="height:' + v + '%;"></div><div class="cb-lbl">' + days[i] + '</div></div>'; });
+    html += '</div><div class="divider"></div><div class="section-lbl" style="margin:0 0 4px;padding:0;">Recent transactions</div></div><div style="padding:0 18px;">';
+    earnings.forEach(t => {
+      const cls = t.amt.startsWith('−') ? 'tx-amt red' : 'tx-amt';
+      html += '<div class="tx-row"><div class="tx-ico">' + t.ico + '</div><div class="b"><div class="tx-lbl">' + t.lbl + '</div><div class="tx-sub">' + t.sub + '</div></div><div class="' + cls + '">' + t.amt + '</div></div>';
+    });
+    html += '</div>';
+  } else {
+    html += '<div style="padding:16px 18px 0;"><div style="display:flex;gap:8px;margin-bottom:8px;"><div style="flex:1;background:#fff;border-radius:12px;border:1px solid #EDE9E0;padding:10px 6px;text-align:center;min-width:0;"><div style="font-size:9px;color:#aaa;font-weight:600;text-transform:uppercase;">Approved</div><div style="font-size:18px;font-weight:700;color:#2E7D32;margin-top:2px;">42</div></div><div style="flex:1;background:#fff;border-radius:12px;border:1px solid #EDE9E0;padding:10px 6px;text-align:center;min-width:0;"><div style="font-size:9px;color:#aaa;font-weight:600;text-transform:uppercase;">Pending</div><div style="font-size:18px;font-weight:700;color:#E65100;margin-top:2px;">3</div></div><div style="flex:1;background:#fff;border-radius:12px;border:1px solid #EDE9E0;padding:10px 6px;text-align:center;min-width:0;"><div style="font-size:9px;color:#aaa;font-weight:600;text-transform:uppercase;">Rejected</div><div style="font-size:18px;font-weight:700;color:#C62828;margin-top:2px;">2</div></div></div><div class="divider"></div><div class="section-lbl" style="margin:0 0 4px;padding:0;">Recent gigs</div></div><div style="padding:0 18px;">';
+    history.forEach(h => {
+      let stCls = 'st-ok', stTxt = 'Approved';
+      if (h.status === 'pending') { stCls = 'st-pend'; stTxt = 'Pending'; }
+      if (h.status === 'rejected') { stCls = 'st-rej'; stTxt = 'Rejected'; }
+      html += '<div class="tx-row"><div class="tx-ico">' + h.ico + '</div><div class="b"><div class="tx-lbl">' + h.lbl + '</div><div class="tx-sub">' + h.sub + ' · ' + h.date + '</div></div><span class="stamp ' + stCls + '">' + stTxt + '</span></div>';
+    });
+    html += '</div>';
+  }
+  c.innerHTML = html;
+}
+
+function setWalTab(t) {
+  curWalTab = t;
+  document.getElementById('wtab-earn').classList.toggle('active', t==='earn');
+  document.getElementById('wtab-hist').classList.toggle('active', t==='hist');
+  renderWallet();
+}
+
+function renderNotifications() {
+  const c = document.getElementById('notif-list');
+  let html = '';
+  notifications.forEach((n, i) => {
+    html += '<div class="notif-row' + (n.unread ? ' unread' : '') + '" onclick="markRead(' + i + ')"><div class="notif-ico" style="background:' + n.iconBg + ';">' + n.ico + '</div><div class="notif-body"><div class="notif-title">' + n.title + '</div><div class="notif-desc">' + n.desc + '</div><div class="notif-time">' + n.time + '</div></div>' + (n.unread ? '<div class="notif-unread-dot"></div>' : '') + '</div>';
+  });
+  c.innerHTML = html;
+}
+
+function markRead(i) {
+  notifications[i].unread = false;
+  renderNotifications();
+  // Hide red dot on bell if all read
+  if (notifications.every(n => !n.unread)) {
+    document.querySelectorAll('.bell-dot').forEach(d => d.style.display = 'none');
+  }
+}
+
+function markAllRead() {
+  notifications.forEach(n => n.unread = false);
+  renderNotifications();
+  document.querySelectorAll('.bell-dot').forEach(d => d.style.display = 'none');
+  toast('All notifications marked as read');
+}
+
+function showDetail(idx) {
+  const g = curGigList[idx];
+  activeGig = g;
+  document.getElementById('dt-title').textContent = g.title;
+  document.getElementById('dt-ico').textContent = g.ico;
+  document.getElementById('dt-ico').style.background = g.bg;
+  document.getElementById('dt-store').textContent = '📍 ' + g.store;
+  document.getElementById('dt-brand').textContent = 'Request by ' + g.brand;
+  document.getElementById('dt-reward').textContent = g.reward;
+  document.getElementById('dt-time').textContent = g.time;
+  document.getElementById('dt-dist').textContent = g.dist;
+  document.getElementById('dt-instr').innerHTML = '1. Locate the ' + g.brand + ' section.<br>2. Take a BEFORE photo.<br>3. Tidy &amp; face products forward.<br>4. Take an AFTER photo.<br>5. Submit for reward.';
+  switchScreen('detail');
+}
+
+function toggleFav(btn) {
+  if (btn.textContent === '♡') { btn.textContent = '♥'; btn.style.color = '#E91E63'; toast('Added to favorites'); }
+  else { btn.textContent = '♡'; btn.style.color = ''; toast('Removed from favorites'); }
+}
+
+// ACCEPT GIG FLOW
+function acceptGig() {
+  if (!activeGig) return;
+  document.getElementById('navDist').textContent = activeGig.dist;
+  document.getElementById('navStore').textContent = activeGig.store;
+  switchScreen('navigate');
+  toast('Gig accepted! Navigate to the store');
+}
+
+function cancelGig() {
+  if (confirm('Cancel this gig? No reward will be earned.')) {
+    if (timerInterval) clearInterval(timerInterval);
+    document.getElementById('activeBanner').classList.remove('show');
+    switchScreen('home');
+    toast('Gig cancelled');
+  }
+}
+
+function arrived() {
+  toast('Arrived! Time to take the before photo');
+  switchScreen('camera-before');
+}
+
+function capturePhoto(which) {
+  const flash = document.getElementById(which === 'before' ? 'flashBefore' : 'flashAfter');
+  flash.classList.add('flash');
+  setTimeout(() => flash.classList.remove('flash'), 500);
+  setTimeout(() => {
+    if (which === 'before') {
+      document.getElementById('progStoreName').textContent = activeGig.store.split(',')[0];
+      document.getElementById('progTaskName').textContent = 'Tidying ' + activeGig.brand + ' shelves';
+      switchScreen('progress');
+      startTimer();
+      // Show active banner on home
+      document.getElementById('activeBannerText').textContent = activeGig.title + ' · in progress';
+    } else {
+      switchScreen('review');
+      document.getElementById('revTitle').textContent = activeGig.title;
+      document.getElementById('revStore').textContent = activeGig.store.split(',')[0];
+      document.getElementById('revReward').textContent = activeGig.reward;
+      const elapsed = 120 - timerSeconds;
+      document.getElementById('revTime').textContent = Math.floor(elapsed/60) + ' min ' + (elapsed%60) + ' sec';
+      if (timerInterval) clearInterval(timerInterval);
+    }
+  }, 600);
+}
+
+function startTimer() {
+  timerSeconds = 120;
+  if (timerInterval) clearInterval(timerInterval);
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    updateTimerDisplay();
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      toast('Time expired! Take your after photo');
+    }
+  }, 1000);
+}
+
+function updTimerStr() {
+  const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+  const s = (timerSeconds % 60).toString().padStart(2, '0');
+  return m + ':' + s;
+}
+
+function updateTimerDisplay() {
+  const el = document.getElementById('progTimer');
+  if (el) el.textContent = updTimerStr();
+}
+
+function toggleCheck(id) {
+  document.getElementById(id).classList.toggle('done');
+}
+
+function takeAfter() {
+  switchScreen('camera-after');
+  toast('Now take an after photo');
+}
+
+function submitGig() {
+  if (!activeGig) return;
+  // Parse reward number
+  const rewardNum = parseInt(activeGig.reward.replace(/[^0-9]/g, ''));
+  userBalance += rewardNum;
+  totalEarned += rewardNum;
+  totalGigs += 1;
+  document.getElementById('completeReward').textContent = activeGig.reward;
+  switchScreen('complete');
+  // Hide active banner
+  document.getElementById('activeBanner').classList.remove('show');
+  // Update balance display
+  setTimeout(() => {
+    document.querySelector('.balance-val').textContent = 'IDR ' + userBalance.toLocaleString('en-US');
+    document.getElementById('profGigs').textContent = totalGigs;
+  }, 100);
+  // Add to recent transactions
+  earnings.unshift({ ico: activeGig.ico, lbl: activeGig.brand + ' · ' + activeGig.title, sub: activeGig.store.split(',')[0] + ' · Just now', amt: '+' + activeGig.reward });
+  history.unshift({ ico: activeGig.ico, lbl: activeGig.title, sub: activeGig.brand + ' · ' + activeGig.store.split(',')[0], date: 'Just now', status: 'pending' });
+}
+
+function finishGig(where) {
+  activeGig = null;
+  switchScreen(where);
+}
+
+function resumeActiveGig() {
+  if (activeGig) switchScreen('progress');
+}
+
+// Init
+window.addEventListener('load', () => {
+  setTimeout(() => { switchScreen('login'); }, 1800);
+});
+
+document.body.addEventListener('touchmove', (e) => {
+  if (e.target.closest('.scroll') === null && e.target.closest('.achv-scroll') === null && e.target.closest('.notes-input') === null) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+renderGigs();
+renderWallet();
+renderNotifications();
+</script>
+
+</body>
+</html>
